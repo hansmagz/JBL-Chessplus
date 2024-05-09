@@ -67,7 +67,7 @@ export class ChessPosition {
 
   // Method to capture a piece at a given position
   capture(from: Pos, to: Pos) {
-    this.explode(to); // Remove the piece at the captured position
+    // this.explode(to); // Remove the piece at the captured position
     this.move(from, to);
     // this.explode(from); // Remove the piece from the capturing position
     // this.explodeArea(to); // Remove surrounding pieces affected by the capture

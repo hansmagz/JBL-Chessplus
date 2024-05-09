@@ -50,10 +50,10 @@ export abstract class ChessPieceSprite extends GameObjects.Sprite {
       duration: 100,
     });
     tween.on('complete', () => {
-      const { explosionParticles, cameras, explosionSound } = this.game;
-      explosionParticles.explode(50, this.x, this.y);
-      cameras.main.shake(500, .005);
-      explosionSound.play();
+      // const { explosionParticles, cameras, explosionSound } = this.game;
+      // explosionParticles.explode(50, this.x, this.y);
+      // cameras.main.shake(500, .005);
+      // explosionSound.play();
       this.setPosition(x, y);
       this.destroy();
     });
