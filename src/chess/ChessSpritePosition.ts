@@ -1,5 +1,6 @@
 import { GameObjects } from "phaser";
 import { BishopSprite } from "./sprites/BishopSprite";
+import { BishopPawnSprite } from "./sprites/BishopPawnSprite";
 import { ChessPieceSprite } from "./sprites/ChessPieceSprite";
 import { KingSprite } from "./sprites/KingSprite";
 import { KnightSprite } from "./sprites/KnightSprite";
@@ -60,6 +61,17 @@ export class ChessSpritePosition {
     // this.explodeArea(to); // Explode surrounding pieces affected by capture
   }
 
+  // Method to capture a piece
+  combine(from: Pos, to: Pos, combineTo: PieceNotation) {
+    console.log(`Sprite combine`)
+    this.spark(to); // Explode the captured piece
+    this.move(from, to);
+    this.spark(to); // Explode the captured piece
+    const sprite = createChessPieceSprite(this.scene, combineTo, to) as ChessPieceSprite; // Create new sprite for combines piece
+    this.container.add(sprite); // Add sprite to container
+    this.setAt(to, sprite)
+  }
+
   // Method to perform kingside castling
   castleKingside(color: ChessColor) {
     const r = [7, 0][color];
@@ -98,6 +110,12 @@ export class ChessSpritePosition {
     this.setAt(pos, null); // Remove piece from position
   }
 
+  // Method to explode a piece
+  spark(pos: Pos) {
+    this.at(pos)?.spark(); // Explode the piece
+    this.setAt(pos, null); // Remove piece from position
+  }
+
   // Method to explode surrounding pieces affected by capture
   explodeArea([r, c]: Pos) {
     for (let dr = -1; dr <= 1; dr++) {
@@ -121,6 +139,7 @@ function createChessPieceSprite(scene: Game, type: PieceNotation | null, pos: Po
     'N': KnightSprite,
     'R': RookSprite,
     'P': PawnSprite,
+    'BP': BishopPawnSprite,
     'k': KingSprite,
     'q': QueenSprite,
     'b': BishopSprite,

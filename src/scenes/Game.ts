@@ -4,7 +4,8 @@ import { JBLChessplus, CastlingData, ChessColor, ChessPositionArrayNotation, Pos
 import { ChessSpritePosition } from '../chess/ChessSpritePosition';
 import { ChessPosition } from '../chess/ChessPosition';
 import { chessTileSize } from '../main';
-import { isPawnPromotion, isValidCapture, isValidKingsideCastle, isValidQueensideCastle, isValidDoubleMove, isValidEnPassant, isValidStandardMove, getValidMovesFrom } from '../chess/validator/ChessValidator';
+import { isPawnPromotion, isValidCapture, isValidCombine, isValidKingsideCastle, isValidQueensideCastle, isValidDoubleMove, isValidEnPassant, isValidStandardMove, getValidMovesFrom } from '../chess/validator/ChessValidator';
+import { PiecesEnum, findPieceEnum } from '../enums';
 
 export class Game extends Scene {
   camera: Phaser.Cameras.Scene2D.Camera;
@@ -24,6 +25,7 @@ export class Game extends Scene {
   debugText: GameObjects.Text;
   explosionSound: Sound.NoAudioSound | Sound.HTML5AudioSound | Sound.WebAudioSound;
   explosionParticles: GameObjects.Particles.ParticleEmitter;
+  sparkParticles: GameObjects.Particles.ParticleEmitter;
 
   promotionPos: Pos;
   promotionMenus: Tuple2<GameObjects.Container>;
@@ -51,7 +53,7 @@ export class Game extends Scene {
 
   create() {
     // Fade in transition
-    this.cameras.main.fadeIn(3000, 0, 0, 0);
+    this.cameras.main.fadeIn(500, 0, 0, 0);
 
     // Reset game state
     this.isGameOver = false;
@@ -68,16 +70,16 @@ export class Game extends Scene {
     this.chessboardMap = createChessboard(this, chessTileSize);
 
     // Initial chessboard setup
-    const chessboardSetup: ChessPositionArrayNotation = [
-      ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-      ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-      [null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null],
-      [null, null, null, null, null, null, null, null],
-      ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-      ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
-    ];
+    // const chessboardSetup: ChessPositionArrayNotation = [
+    //   ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+    //   ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+    //   [null, null, null, null, null, null, null, null],
+    //   [null, null, null, null, null, null, null, null],
+    //   [null, null, null, null, null, null, null, null],
+    //   [null, null, null, null, null, null, null, null],
+    //   ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+    //   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
+    // ];
 
     //Test
     // const chessboardSetup: ChessPositionArrayNotation = [
@@ -90,6 +92,18 @@ export class Game extends Scene {
     //   ['P', 'P', 'P', null, 'P', 'P', 'P', 'P'],
     //   ['R', null, 'B', 'Q', 'K', 'B', 'N', 'R'],
     // ];
+
+    // Test2
+    const chessboardSetup: ChessPositionArrayNotation = [
+      ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+      ['p', 'p', 'p', 'p', 'p', 'p', 'p', null],
+      [null, null, null, null, null, null, null, 'p'],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, 'P', 'P', 'P', 'Q', null, null],
+      ['P', 'P', null, 'B', null, null, 'P', 'P'],
+      ['R', 'N', null, null, 'K', 'B', 'N', 'R'],
+    ];
 
     // Create chess piece sprites
     const pieceSprites = new ChessSpritePosition(this, chessboardSetup);
@@ -140,9 +154,18 @@ export class Game extends Scene {
       scale: { start: .6, end: 0, random: true },
       alpha: { start: 1, end: 0 },
       lifespan: { min: 300, max: 600 },
+      tint: 0xff9800, // Optional: change the color to yellow
       emitting: false,
     });
 
+    this.sparkParticles = this.add.particles(0, 0, ASSETS.PARTICLE.key, {
+      speed: { min: 200, max: 400 },
+      scale: { start: 0.5, end: 0 },
+      alpha: { start: 1, end: 0 },
+      lifespan: { min: 100, max: 200 },
+      tint: 0x90caf9, // Optional: change the color to yellow
+      emitting: false,
+    });
 
     this.setUpInput();
   }
@@ -186,7 +209,9 @@ export class Game extends Scene {
       const { x, y } = tile;
       const pos: Pos = [y, x];
       const { activeColor, position } = this.chess.data;
-      if (position.colorAt(pos) == activeColor) {
+      if (position.colorAt(pos) == activeColor &&
+      this.selectedTileMarker.visible == false // to be able to target team pieces
+      ) {
         selectTile(pos);
         return;
       }
@@ -231,6 +256,10 @@ export class Game extends Scene {
         this.promotionPos = to;
         this.promotionMenus[color].visible = true;
       }
+      return true;
+    }
+    if (isValidCombine(data, from, to)) {
+      this.chess.combine(from, to, findPieceEnum(data.position.typeAt(from) + data.position.typeAt(to)));
       return true;
     }
     if (isValidCapture(data, from, to)) {

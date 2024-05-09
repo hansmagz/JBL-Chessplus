@@ -1,6 +1,7 @@
 import { ChessColor, FENData, PieceNotation, Pos, equals } from "../JBLChessplus";
 import { ChessPosition } from "../ChessPosition";
 import { BishopValidator } from "./BishopValidator";
+import { BishopPawnValidator } from "./BishopPawnValidator";
 import { ChessPieceValidator } from "./ChessPieceValidator";
 import { KingValidator } from "./KingValidator";
 import { KnightValidator } from "./KnightValidator";
@@ -16,6 +17,7 @@ const pieceValidators: Record<PieceNotation, ChessPieceValidator> = {
   'N': new KnightValidator(0), // Knight for white pieces
   'R': new RookValidator(0), // Rook for white pieces
   'P': new PawnValidator(0), // Pawn for white pieces
+  'BP': new BishopPawnValidator(0), // Pawn for white pieces
   'k': new KingValidator(1), // King for black pieces
   'q': new QueenValidator(1), // Queen for black pieces
   'b': new BishopValidator(1), // Bishop for black pieces
@@ -66,6 +68,16 @@ export function isValidStandardMove(data: FENData, from: Pos, to: Pos): boolean 
 
 // Checks if a capture move is valid
 export function isValidCapture(data: FENData, from: Pos, to: Pos): boolean {
+  if (!canMovePiece(data, from)) return false;
+  const validator = getValidatorAt(data, from);
+  if (!validator) return false;
+  return validator.getValidCapturesFrom(data, from)
+    .some(p => equals(p, to));
+}
+
+// Checks if a combine move is valid
+export function isValidCombine(data: FENData, from: Pos, to: Pos): boolean {
+  if(data.position.colorAt(to) != data.activeColor) return false;
   if (!canMovePiece(data, from)) return false;
   const validator = getValidatorAt(data, from);
   if (!validator) return false;

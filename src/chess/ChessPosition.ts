@@ -73,6 +73,15 @@ export class ChessPosition {
     // this.explodeArea(to); // Remove surrounding pieces affected by the capture
   }
 
+  combine(from: Pos, to: Pos, combineTo: PieceNotation) {
+    console.log(`Position combine`)
+    this.explode(to); // Remove the piece at the captured position
+    this.move(from, to);
+    this.setAt(to, combineTo)
+    // this.explode(from); // Remove the piece from the capturing position
+    // this.explodeArea(to); // Remove surrounding pieces affected by the capture
+  }
+
   // Method to perform kingside castling
   castleKingside(color: ChessColor) {
     const r = [7, 0][color];

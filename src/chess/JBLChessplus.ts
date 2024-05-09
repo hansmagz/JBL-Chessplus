@@ -7,7 +7,7 @@ export type CastlingData = Tuple2<{ kingside: boolean, queenside: boolean }>;
 export type FENData = { position: ChessPosition, activeColor: ChessColor, canCastle: CastlingData, enPassants: Pos[], halfMoves: number, fullMoves: number };
 export type Pos = [number, number];
 export type ChessColor = 0 | 1;
-export type PieceNotation = 'K' | 'Q' | 'B' | 'N' | 'R' | 'P' | 'k' | 'q' | 'b' | 'n' | 'r' | 'p';
+export type PieceNotation = 'K' | 'Q' | 'B' | 'BP' | 'N' | 'R' | 'P' | 'k' | 'q' | 'b' | 'n' | 'r' | 'p';
 export type PromotablePieceNotation = 'Q' | 'q' | 'B' | 'b' | 'N' | 'n' | 'R' | 'r';
 export type Tuple8<T> = [T, T, T, T, T, T, T, T];
 export type Tuple2<T> = [T, T];
@@ -80,6 +80,17 @@ export class JBLChessplus {
     // update chess position and ui
     this.#data.position.capture(from, to);
     this.spritePosition.capture(from, to);
+  }
+
+  // capture a piece and reset the half clock
+  combine(from: Pos, to: Pos, combineTo: PieceNotation) {
+    console.log('standard combine');
+    this.switchTurn();
+    this.#data.halfMoves = 0;
+
+    // update chess position and ui
+    this.#data.position.combine(from, to, combineTo);
+    this.spritePosition.combine(from, to, combineTo);
   }
 
   // ordinary, non special, non capture moves

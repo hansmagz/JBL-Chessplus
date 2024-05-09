@@ -21,7 +21,7 @@ export abstract class ChessPieceValidator {
 
   // returns an array of all possible capture from a given position, including invalid moves that place the King in Atomic check or blow up the king of the same color
   getPossibleCapturesFrom(data: FENData, from: Pos): Pos[] {
-    const enemyColor = getEnemyColor(this.color);
+    // const enemyColor = getEnemyColor(this.color);
     const { position } = data;
     if (position.colorAt(from) != this.color) return [];
     const moves: Pos[] = [];
@@ -31,7 +31,7 @@ export abstract class ChessPieceValidator {
         const pos: Pos = [r + i * dr, c + i * dc];
         if (!position.has(pos)) break;
         if (position.emptyAt(pos)) continue;
-        if (position.colorAt(pos) != enemyColor) break;
+        // if (position.colorAt(pos) != enemyColor) break; //Remove this to enable targeting team pieces
         moves.push(pos);
         break;
       }

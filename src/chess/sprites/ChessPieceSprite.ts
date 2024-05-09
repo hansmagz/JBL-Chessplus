@@ -59,4 +59,25 @@ export abstract class ChessPieceSprite extends GameObjects.Sprite {
     });
   }
 
+  // Combines the chess piece
+  spark() {
+    const [r, c] = this.pos;
+    const { x, y } = this.game.chessboardMap.tileToWorldXY(c, r) as Math.Vector2;
+    const tween = this.game.tweens.add({
+      targets: this,
+      x: x,
+      y: y,
+      ease: 'quad.in',
+      duration: 100,
+    });
+    tween.on('complete', () => {
+      const { sparkParticles, cameras, explosionSound } = this.game;
+      sparkParticles.explode(50, this.x, this.y);
+      cameras.main.shake(500, .005);
+      explosionSound.play();
+      this.setPosition(x, y);
+      this.destroy();
+    });
+  }
+
 }
