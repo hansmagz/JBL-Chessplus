@@ -56,7 +56,7 @@ export class ChessSpritePosition {
     this.explode(to); // Explode the captured piece
     this.at(from)?.move(to); // Move capturing piece to new position
     this.explode(from); // Explode the capturing piece
-    this.explodeArea(to); // Explode surrounding pieces affected by capture
+    // this.explodeArea(to); // Explode surrounding pieces affected by capture
   }
 
   // Method to perform kingside castling
