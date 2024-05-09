@@ -69,7 +69,7 @@ export class ChessPosition {
   capture(from: Pos, to: Pos) {
     this.explode(to); // Remove the piece at the captured position
     this.explode(from); // Remove the piece from the capturing position
-    this.explodeArea(to); // Remove surrounding pieces affected by the capture
+    // this.explodeArea(to); // Remove surrounding pieces affected by the capture
   }
 
   // Method to perform kingside castling
