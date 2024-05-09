@@ -92,8 +92,9 @@ export class ChessPosition {
     const r1 = from[0];
     const c2 = to[1];
     this.explode([r1, c2]); // Remove the captured pawn
-    this.explode(from); // Remove the pawn that performed en passant
-    this.explodeArea(to); // Remove surrounding pieces affected by the capture
+    this.move(from, to);
+    // this.explode(from); // Remove the pawn that performed en passant
+    // this.explodeArea(to); // Remove surrounding pieces affected by the capture
   }
 
   // Method to move a piece from one position to another

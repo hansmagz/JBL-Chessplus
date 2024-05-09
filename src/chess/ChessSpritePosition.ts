@@ -79,8 +79,9 @@ export class ChessSpritePosition {
     const r1 = from[0];
     const c2 = to[1];
     this.explode([r1, c2]);
-    this.explode(from);
-    this.explodeArea(to);
+    this.move(from, to);
+    // this.explode(from);
+    // this.explodeArea(to);
   }
 
   // Method to move a piece
