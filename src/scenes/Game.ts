@@ -81,14 +81,14 @@ export class Game extends Scene {
 
     //Test
     // const chessboardSetup: ChessPositionArrayNotation = [
-    //   ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+    //   ['r', 'n', 'b', 'q', 'k', 'b', null, 'r'],
     //   ['p', 'p', 'p', null, null, 'p', 'p', 'p'],
-    //   [null, null, null, null, null, null, null, null],
-    //   [null, null, null, 'p', 'p', null, null, null],
+    //   [null, null, null, null, 'n', null, null, null],
+    //   [null, null, null, null, 'p', null, null, null],
     //   [null, null, null, 'P', null, null, null, null],
-    //   [null, null, null, null, null, null, null, null],
+    //   [null, null, 'N', null, null, null, null, null],
     //   ['P', 'P', 'P', null, 'P', 'P', 'P', 'P'],
-    //   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
+    //   ['R', null, 'B', 'Q', 'K', 'B', 'N', 'R'],
     // ];
 
     // Create chess piece sprites
