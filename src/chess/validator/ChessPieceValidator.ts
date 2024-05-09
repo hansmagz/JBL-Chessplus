@@ -1,7 +1,7 @@
 import { PiecesEnum } from "../../enums";
 import { ChessColor, FENData, Pos } from "../JBLChessplus";
 import { ChessPosition } from "../ChessPosition";
-import { getEnemyColor, isAtomicCheck } from "./AtomicChessValidator";
+import { getEnemyColor, isAtomicCheck } from "./ChessValidator";
 
 // base class to validate chess piece moves
 export abstract class ChessPieceValidator {

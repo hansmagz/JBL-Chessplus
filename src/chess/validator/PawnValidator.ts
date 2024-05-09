@@ -1,7 +1,7 @@
 import { PiecesEnum } from "../../enums";
 import { ChessColor, Pos, FENData, equals } from "../JBLChessplus";
 import { ChessPosition } from "../ChessPosition";
-import { isAtomicCheck } from "./AtomicChessValidator";
+import { isAtomicCheck } from "./ChessValidator";
 import { ChessPieceValidator } from "./ChessPieceValidator";
 
 // class to validate pawn moves

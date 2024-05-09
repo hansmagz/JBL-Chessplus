@@ -4,7 +4,7 @@ import { JBLChessplus, CastlingData, ChessColor, ChessPositionArrayNotation, Pos
 import { ChessSpritePosition } from '../chess/ChessSpritePosition';
 import { ChessPosition } from '../chess/ChessPosition';
 import { chessTileSize } from '../main';
-import { isPawnPromotion, isValidCapture, isValidKingsideCastle, isValidQueensideCastle, isValidDoubleMove, isValidEnPassant, isValidStandardMove, getValidMovesFrom } from '../chess/validator/AtomicChessValidator';
+import { isPawnPromotion, isValidCapture, isValidKingsideCastle, isValidQueensideCastle, isValidDoubleMove, isValidEnPassant, isValidStandardMove, getValidMovesFrom } from '../chess/validator/ChessValidator';
 
 export class Game extends Scene {
   camera: Phaser.Cameras.Scene2D.Camera;
@@ -78,6 +78,18 @@ export class Game extends Scene {
       ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
       ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
     ];
+
+    //Test
+    // const chessboardSetup: ChessPositionArrayNotation = [
+    //   ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+    //   ['p', 'p', 'p', null, null, 'p', 'p', 'p'],
+    //   [null, null, null, null, null, null, null, null],
+    //   [null, null, null, 'p', 'p', null, null, null],
+    //   [null, null, null, 'P', null, null, null, null],
+    //   [null, null, null, null, null, null, null, null],
+    //   ['P', 'P', 'P', null, 'P', 'P', 'P', 'P'],
+    //   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
+    // ];
 
     // Create chess piece sprites
     const pieceSprites = new ChessSpritePosition(this, chessboardSetup);

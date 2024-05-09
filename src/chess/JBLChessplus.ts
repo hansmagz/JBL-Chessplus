@@ -1,6 +1,6 @@
 import { ChessSpritePosition } from "./ChessSpritePosition";
 import { ChessPosition } from "./ChessPosition";
-import { getEnemyColor, isCheckMate, isStaleMate } from "./validator/AtomicChessValidator";
+import { getEnemyColor, isCheckMate, isStaleMate } from "./validator/ChessValidator";
 import { PiecesEnum } from "../enums";
 
 export type CastlingData = Tuple2<{ kingside: boolean, queenside: boolean }>;
