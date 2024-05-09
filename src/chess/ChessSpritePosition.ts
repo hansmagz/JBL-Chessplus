@@ -54,8 +54,9 @@ export class ChessSpritePosition {
   // Method to capture a piece
   capture(from: Pos, to: Pos) {
     this.explode(to); // Explode the captured piece
-    this.at(from)?.move(to); // Move capturing piece to new position
-    this.explode(from); // Explode the capturing piece
+    // this.at(from)?.move(to); // Move capturing piece to new position
+    this.move(from, to);
+    // this.explode(from); // Explode the capturing piece
     // this.explodeArea(to); // Explode surrounding pieces affected by capture
   }
 

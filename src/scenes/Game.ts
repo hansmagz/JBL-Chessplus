@@ -83,7 +83,7 @@ export class Game extends Scene {
     // const chessboardSetup: ChessPositionArrayNotation = [
     //   ['r', 'n', 'b', 'q', 'k', 'b', null, 'r'],
     //   ['p', 'p', 'p', null, null, 'p', 'p', 'p'],
-    //   [null, null, null, null, 'n', null, null, null],
+    //   [null, null, null, null, null, 'n', null, null],
     //   [null, null, null, null, 'p', null, null, null],
     //   [null, null, null, 'P', null, null, null, null],
     //   [null, null, 'N', null, null, null, null, null],
