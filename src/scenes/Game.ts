@@ -4,8 +4,8 @@ import { JBLChessplus, CastlingData, ChessColor, ChessPositionArrayNotation, Pos
 import { ChessSpritePosition } from '../chess/ChessSpritePosition';
 import { ChessPosition } from '../chess/ChessPosition';
 import { chessTileSize } from '../main';
-import { isPawnPromotion, isValidCapture, isValidCombine, isValidKingsideCastle, isValidQueensideCastle, isValidDoubleMove, isValidEnPassant, isValidStandardMove, getValidMovesFrom, getValidMovesByNotation } from '../chess/validator/ChessValidator';
-import { PiecesEnum, findPieceEnum } from '../enums';
+import { isPawnPromotion, isValidCapture, isValidCombine, isValidKingsideCastle, isValidQueensideCastle, isValidDoubleMove, isValidEnPassant, isValidStandardMove, getValidMovesByNotation } from '../chess/validator/ChessValidator';
+import { findPieceEnum } from '../enums';
 
 export class Game extends Scene {
   camera: Phaser.Cameras.Scene2D.Camera;

@@ -1,12 +1,11 @@
 import { GameObjects } from "phaser";
-import { BishopSprite } from "./sprites/BishopSprite";
-import { BishopPawnSprite } from "./sprites/BishopPawnSprite";
+import { BishopSprite, BishopKnightSprite, BishopRookSprite, BishopPawnSprite } from "./sprites/BishopSprite";
 import { ChessPieceSprite } from "./sprites/ChessPieceSprite";
-import { KingSprite } from "./sprites/KingSprite";
-import { KnightSprite } from "./sprites/KnightSprite";
+import { KingSprite, KingQueenSprite, KingBishopSprite, KingKnightSprite, KingRookSprite, KingPawnSprite } from "./sprites/KingSprite";
+import { KnightSprite, KnightRookSprite, KnightPawnSprite } from "./sprites/KnightSprite";
 import { PawnSprite } from "./sprites/PawnSprite";
-import { QueenSprite } from "./sprites/QueenSprite";
-import { RookSprite } from "./sprites/RookSprite";
+import { QueenSprite, QueenBishopSprite, QueenKnightSprite, QueenRookSprite, QueenPawnSprite } from "./sprites/QueenSprite";
+import { RookSprite, RookPawnSprite } from "./sprites/RookSprite";
 import { Game } from "../scenes/Game";
 import { ChessPositionArrayNotation, Pos, PieceNotation, ChessColor } from "./JBLChessplus";
 
@@ -134,18 +133,57 @@ function createChessPieceSprite(scene: Game, type: PieceNotation | null, pos: Po
   // Map piece notations to corresponding sprite constructors
   const constructors: Record<PieceNotation, { new(scene: Game, pos: Pos, color: ChessColor): ChessPieceSprite }> = {
     'K': KingSprite,
+    'KQ': KingQueenSprite,
+    'KB': KingBishopSprite,
+    'KN': KingKnightSprite,
+    'KR': KingRookSprite,
+    'KP': KingPawnSprite,
     'Q': QueenSprite,
+    'QQ': QueenSprite,
+    'QB': QueenBishopSprite,
+    'QN': QueenKnightSprite,
+    'QR': QueenRookSprite,
+    'QP': QueenPawnSprite,
     'B': BishopSprite,
-    'N': KnightSprite,
-    'R': RookSprite,
-    'P': PawnSprite,
+    'BB': BishopSprite,
+    'BN': BishopKnightSprite,
+    'BR': BishopRookSprite,
     'BP': BishopPawnSprite,
+    'N': KnightSprite,
+    'NN': KnightSprite,
+    'NR': KnightRookSprite,
+    'NP': KnightPawnSprite,
+    'R': RookSprite,
+    'RR': RookSprite,
+    'RP': RookPawnSprite,
+    'P': PawnSprite,
+    'PP': PawnSprite,
     'k': KingSprite,
+    'kq': KingQueenSprite,
+    'kb': KingBishopSprite,
+    'kn': KingKnightSprite,
+    'kr': KingRookSprite,
+    'kp': KingPawnSprite,
     'q': QueenSprite,
+    'qq': QueenSprite,
+    'qb': QueenBishopSprite,
+    'qn': QueenKnightSprite,
+    'qr': QueenRookSprite,
+    'qp': QueenPawnSprite,
     'b': BishopSprite,
+    'bb': BishopSprite,
+    'bn': BishopKnightSprite,
+    'br': BishopRookSprite,
+    'bp': BishopPawnSprite,
     'n': KnightSprite,
+    'nn': KnightSprite,
+    'nr': KnightRookSprite,
+    'np': KnightPawnSprite,
     'r': RookSprite,
+    'rr': RookSprite,
+    'rp': RookPawnSprite,
     'p': PawnSprite,
+    'pp': PawnSprite,
   };
   const color = type.toUpperCase() == type ? 0 : 1; // Determine piece color
   return scene.add.existing(new constructors[type](scene, pos, color)); // Create and return sprite
