@@ -4,7 +4,7 @@ import { JBLChessplus, CastlingData, ChessColor, ChessPositionArrayNotation, Pos
 import { ChessSpritePosition } from '../chess/ChessSpritePosition';
 import { ChessPosition } from '../chess/ChessPosition';
 import { chessTileSize } from '../main';
-import { isPawnPromotion, isValidCapture, isValidCombine, isValidKingsideCastle, isValidQueensideCastle, isValidDoubleMove, isValidEnPassant, isValidStandardMove, getValidMovesFrom } from '../chess/validator/ChessValidator';
+import { isPawnPromotion, isValidCapture, isValidCombine, isValidKingsideCastle, isValidQueensideCastle, isValidDoubleMove, isValidEnPassant, isValidStandardMove, getValidMovesFrom, getValidMovesByNotation } from '../chess/validator/ChessValidator';
 import { PiecesEnum, findPieceEnum } from '../enums';
 
 export class Game extends Scene {
@@ -82,28 +82,28 @@ export class Game extends Scene {
     // ];
 
     //Test
-    // const chessboardSetup: ChessPositionArrayNotation = [
-    //   ['r', 'n', 'b', 'q', 'k', 'b', null, 'r'],
-    //   ['p', 'p', 'p', null, null, 'p', 'p', 'p'],
-    //   [null, null, null, null, null, 'n', null, null],
-    //   [null, null, null, null, 'p', null, null, null],
-    //   [null, null, null, 'P', null, null, null, null],
-    //   [null, null, 'N', null, null, null, null, null],
-    //   ['P', 'P', 'P', null, 'P', 'P', 'P', 'P'],
-    //   ['R', null, 'B', 'Q', 'K', 'B', 'N', 'R'],
-    // ];
-
-    // Test2
     const chessboardSetup: ChessPositionArrayNotation = [
       ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-      ['p', 'p', 'p', 'p', 'p', 'p', 'p', null],
-      [null, null, null, null, null, null, null, 'p'],
+      ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
       [null, null, null, null, null, null, null, null],
       [null, null, null, null, null, null, null, null],
-      [null, null, 'P', 'P', 'P', 'Q', null, null],
-      ['P', 'P', null, 'B', null, null, 'P', 'P'],
-      ['R', 'N', null, null, 'K', 'B', 'N', 'R'],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+      ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
     ];
+
+    // Test2
+    // const chessboardSetup: ChessPositionArrayNotation = [
+    //   ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+    //   ['p', 'p', 'p', 'p', 'p', 'p', 'p', null],
+    //   [null, null, null, null, null, null, null, 'p'],
+    //   [null, null, null, null, null, null, null, null],
+    //   [null, null, null, null, null, null, null, null],
+    //   [null, null, 'P', 'P', 'P', 'Q', null, null],
+    //   ['P', 'P', null, 'B', null, null, 'P', 'P'],
+    //   ['R', 'N', null, null, 'K', 'B', 'N', 'R'],
+    // ];
 
     // Create chess piece sprites
     const pieceSprites = new ChessSpritePosition(this, chessboardSetup);
@@ -226,7 +226,7 @@ export class Game extends Scene {
   // Show indicators to indicate all possible moves of a chess piece at a given location
   showValidMoves(pos: Pos) {
     this.hideMoveMarkers();
-    getValidMovesFrom(this.chess.data, pos)
+    getValidMovesByNotation(this.chess.data, pos)
       .forEach(([r, c]) => {
         const marker = this.moveMarkers[r][c];
         this.children.bringToTop(marker);
@@ -249,6 +249,10 @@ export class Game extends Scene {
     // console.log(`pawn promotion? ${validator.isPawnPromotion(from, to)}`);
 
     const isPromotion = isPawnPromotion(data, from, to);
+    if (isValidEnPassant(data, from, to)) {
+      this.chess.enPassant(from, to);
+      return true;
+    }
     if (isValidStandardMove(data, from, to)) {
       const color = activeColor;
       this.chess.moveStandard(from, to);
@@ -268,10 +272,6 @@ export class Game extends Scene {
     }
     if (isValidDoubleMove(data, from, to)) {
       this.chess.moveDouble(from, to);
-      return true;
-    }
-    if (isValidEnPassant(data, from, to)) {
-      this.chess.enPassant(from, to);
       return true;
     }
     if (isValidKingsideCastle(data, from, to)) {

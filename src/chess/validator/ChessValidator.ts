@@ -8,6 +8,7 @@ import { KnightValidator } from "./KnightValidator";
 import { PawnValidator } from "./PawnValidator";
 import { QueenValidator } from "./QueenValidator";
 import { RookValidator } from "./RookValidator";
+import { findPieceEnum } from "../../enums";
 
 // A dictionary mapping piece notations to their respective validators
 const pieceValidators: Record<PieceNotation, ChessPieceValidator> = {
@@ -38,10 +39,29 @@ function getValidatorAt(data: FENData, from: Pos): ChessPieceValidator | null {
   return piece ? pieceValidators[piece] : null;
 }
 
+function getValidatorByNotation(piece: PieceNotation): ChessPieceValidator {
+  return pieceValidators[piece];
+}
+
 // Returns an array of valid moves from a given position
 export function getValidMovesFrom(data: FENData, from: Pos): Pos[] {
   if (!canMovePiece(data, from)) return [];
   return getValidatorAt(data, from)?.getValidMovesFrom(data, from) ?? [];
+}
+
+// Combined pieces compatible
+export function getValidMovesByNotation(data: FENData, from: Pos): Pos[] {
+  if (!canMovePiece(data, from)) return [];
+
+  const pieceString = data.position.at(from)!.toString();
+  if (pieceString.length > 1) { // Combined
+    const [firstPiece, secondPiece] = pieceString.split('');
+    const firstPieceMoves = pieceValidators[findPieceEnum(firstPiece)]?.getValidMovesFrom(data, from) ?? [];
+    const secondPieceMoves = pieceValidators[findPieceEnum(secondPiece)]?.getValidMovesFrom(data, from) ?? [];
+    return [...firstPieceMoves, ...secondPieceMoves];
+  } else {
+    return getValidatorAt(data, from)?.getValidMovesFrom(data, from) ?? [];
+  }
 }
 
 // Checks if a pawn is promoting
@@ -60,24 +80,48 @@ export function isPawnPromotion(data: FENData, from: Pos, to: Pos): boolean {
 // Checks if a standard move is valid
 export function isValidStandardMove(data: FENData, from: Pos, to: Pos): boolean {
   if (!canMovePiece(data, from)) return false;
-  const validator = getValidatorAt(data, from);
-  if (!validator) return false;
-  return validator.getValidStandardMovesFrom(data, from)
-    .some(p => equals(p, to));
+  const pieceString = data.position.at(from)?.toString() || '';
+
+  if (pieceString.length === 1) {
+    const validator = getValidatorAt(data, from);
+    return validator?.getValidStandardMovesFrom(data, from).some(p => equals(p, to)) || false;
+  }
+
+  const [firstPiece, secondPiece] = pieceString.split('');
+  const firstValidator = getValidatorByNotation(findPieceEnum(firstPiece));
+  const secondValidator = getValidatorByNotation(findPieceEnum(secondPiece));
+
+  return (
+    firstValidator?.getValidStandardMovesFrom(data, from).some(p => equals(p, to)) ||
+    secondValidator?.getValidStandardMovesFrom(data, from).some(p => equals(p, to)) ||
+    false
+  );
 }
 
 // Checks if a capture move is valid
 export function isValidCapture(data: FENData, from: Pos, to: Pos): boolean {
   if (!canMovePiece(data, from)) return false;
-  const validator = getValidatorAt(data, from);
-  if (!validator) return false;
-  return validator.getValidCapturesFrom(data, from)
-    .some(p => equals(p, to));
+  const pieceString = data.position.at(from)?.toString() || '';
+
+  if (pieceString.length === 1) {
+    const validator = getValidatorAt(data, from);
+    return validator?.getValidCapturesFrom(data, from).some(p => equals(p, to)) || false;
+  }
+
+  const [firstPiece, secondPiece] = pieceString.split('');
+  const firstValidator = getValidatorByNotation(findPieceEnum(firstPiece));
+  const secondValidator = getValidatorByNotation(findPieceEnum(secondPiece));
+
+  return (
+    firstValidator?.getValidCapturesFrom(data, from).some(p => equals(p, to)) ||
+    secondValidator?.getValidCapturesFrom(data, from).some(p => equals(p, to)) ||
+    false
+  );
 }
 
 // Checks if a combine move is valid
 export function isValidCombine(data: FENData, from: Pos, to: Pos): boolean {
-  if(data.position.colorAt(to) != data.activeColor) return false;
+  if (data.position.colorAt(to) != data.activeColor) return false;
   if (!canMovePiece(data, from)) return false;
   const validator = getValidatorAt(data, from);
   if (!validator) return false;
@@ -88,37 +132,99 @@ export function isValidCombine(data: FENData, from: Pos, to: Pos): boolean {
 // Checks if a double move (for pawn) is valid
 export function isValidDoubleMove(data: FENData, from: Pos, to: Pos): boolean {
   if (!canMovePiece(data, from)) return false;
-  const validator = getValidatorAt(data, from);
-  if (!(validator instanceof PawnValidator)) return false;
-  return validator.getValidDoubleMovesFrom(data, from)
-    .some(p => equals(p, to));
+  const pieceString = data.position.at(from)?.toString() || '';
+
+  if (pieceString.length === 1) {
+    const validator = getValidatorAt(data, from);
+    if (!(validator instanceof PawnValidator)) return false;
+    return validator.getValidDoubleMovesFrom(data, from).some(p => equals(p, to));
+  }
+
+  const [firstPiece, secondPiece] = pieceString.split('');
+  const firstValidator = getValidatorByNotation(findPieceEnum(firstPiece));
+  const secondValidator = getValidatorByNotation(findPieceEnum(secondPiece));
+
+  if (firstValidator instanceof PawnValidator) {
+    return firstValidator.getValidDoubleMovesFrom(data, from).some(p => equals(p, to));
+  } else if (secondValidator instanceof PawnValidator) {
+    return secondValidator.getValidDoubleMovesFrom(data, from).some(p => equals(p, to));
+  }
+
+  return false;
 }
 
 // Checks if an en passant move is valid
 export function isValidEnPassant(data: FENData, from: Pos, to: Pos): boolean {
   if (!canMovePiece(data, from)) return false;
-  const validator = getValidatorAt(data, from);
-  if (!(validator instanceof PawnValidator)) return false;
-  return validator.getValidEnPassantsFrom(data, from)
-    .some(p => equals(p, to));
+  const pieceString = data.position.at(from)?.toString() || '';
+
+  if (pieceString.length === 1) {
+    const validator = getValidatorAt(data, from);
+    if (!(validator instanceof PawnValidator)) return false;
+    return validator.getValidEnPassantsFrom(data, from).some(p => equals(p, to));
+  }
+
+  const [firstPiece, secondPiece] = pieceString.split('');
+  const firstValidator = getValidatorByNotation(findPieceEnum(firstPiece));
+  const secondValidator = getValidatorByNotation(findPieceEnum(secondPiece));
+
+  if (firstValidator instanceof PawnValidator) {
+    return firstValidator.getValidEnPassantsFrom(data, from).some(p => equals(p, to));
+  } else if (secondValidator instanceof PawnValidator) {
+    return secondValidator.getValidEnPassantsFrom(data, from).some(p => equals(p, to));
+  }
+
+  return false;
 }
 
 // Checks if a kingside castle move is valid
 export function isValidKingsideCastle(data: FENData, from: Pos, to: Pos): boolean {
   if (!canMovePiece(data, from)) return false;
-  const validator = getValidatorAt(data, from);
-  if (!(validator instanceof KingValidator)) return false;
-  return validator.getValidKingsideCastlesFrom(data, from)
-    .some(p => equals(p, to));
+  const pieceString = data.position.at(from)?.toString() || '';
+
+  if (pieceString.length === 1) {
+    const validator = getValidatorAt(data, from);
+    if (!(validator instanceof KingValidator)) return false;
+    return validator.getValidKingsideCastlesFrom(data, from).some(p => equals(p, to));
+  }
+
+  const [firstPiece, secondPiece] = pieceString.split('');
+  const firstValidator = getValidatorByNotation(findPieceEnum(firstPiece));
+  const secondValidator = getValidatorByNotation(findPieceEnum(secondPiece));
+
+  if (firstValidator instanceof KingValidator) {
+    return firstValidator.getValidKingsideCastlesFrom(data, from)
+      .some(p => equals(p, to));
+  } else if (secondValidator instanceof KingValidator) {
+    return secondValidator.getValidKingsideCastlesFrom(data, from)
+      .some(p => equals(p, to));
+  }
+
+  return false;
 }
 
 // Checks if a queenside castle move is valid
 export function isValidQueensideCastle(data: FENData, from: Pos, to: Pos): boolean {
   if (!canMovePiece(data, from)) return false;
-  const validator = getValidatorAt(data, from);
-  if (!(validator instanceof KingValidator)) return false;
-  return validator.getValidQueensideCastleFrom(data, from)
-    .some(p => equals(p, to));
+  const pieceString = data.position.at(from)?.toString() || '';
+
+  if (pieceString.length === 1) {
+    const validator = getValidatorAt(data, from);
+    if (!(validator instanceof KingValidator)) return false;
+    return validator.getValidQueensideCastleFrom(data, from).some(p => equals(p, to));
+  }
+
+  const [firstPiece, secondPiece] = pieceString.split('');
+  const firstValidator = getValidatorByNotation(findPieceEnum(firstPiece));
+  const secondValidator = getValidatorByNotation(findPieceEnum(secondPiece));
+
+  if (firstValidator instanceof KingValidator) {
+    return firstValidator.getValidQueensideCastleFrom(data, from).some(p => equals(p, to));
+  } else if (secondValidator instanceof KingValidator) {
+    return secondValidator.getValidQueensideCastleFrom(data, from).some(p => equals(p, to));
+  }
+
+  return false;
 }
 
 // Checks if a position results in atomic check
