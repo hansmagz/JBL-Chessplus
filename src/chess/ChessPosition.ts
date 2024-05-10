@@ -77,6 +77,7 @@ export class ChessPosition {
     console.log(`Position combine`)
     this.explode(to); // Remove the piece at the captured position
     this.move(from, to);
+    console.log(`combineTo`, combineTo)
     this.setAt(to, combineTo)
     // this.explode(from); // Remove the piece from the capturing position
     // this.explodeArea(to); // Remove surrounding pieces affected by the capture

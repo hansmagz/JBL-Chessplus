@@ -1,11 +1,11 @@
 import { GameObjects, Scene, Sound, Tilemaps } from 'phaser';
 import { ASSETS } from '../assets';
-import { JBLChessplus, CastlingData, ChessColor, ChessPositionArrayNotation, Pos, PromotablePieceNotation, Tuple2 } from '../chess/JBLChessplus';
+import { JBLChessplus, CastlingData, ChessColor, ChessPositionArrayNotation, Pos, PromotablePieceNotation, Tuple2, findPiece } from '../chess/JBLChessplus';
 import { ChessSpritePosition } from '../chess/ChessSpritePosition';
 import { ChessPosition } from '../chess/ChessPosition';
 import { chessTileSize } from '../main';
 import { isPawnPromotion, isValidCapture, isValidCombine, isValidKingsideCastle, isValidQueensideCastle, isValidDoubleMove, isValidEnPassant, isValidStandardMove, getValidMovesByNotation } from '../chess/validator/ChessValidator';
-import { findPieceEnum } from '../enums';
+// import { findPieceEnum } from '../enums';
 
 export class Game extends Scene {
   camera: Phaser.Cameras.Scene2D.Camera;
@@ -70,18 +70,6 @@ export class Game extends Scene {
     this.chessboardMap = createChessboard(this, chessTileSize);
 
     // Initial chessboard setup
-    // const chessboardSetup: ChessPositionArrayNotation = [
-    //   ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-    //   ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-    //   [null, null, null, null, null, null, null, null],
-    //   [null, null, null, null, null, null, null, null],
-    //   [null, null, null, null, null, null, null, null],
-    //   [null, null, null, null, null, null, null, null],
-    //   ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-    //   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
-    // ];
-
-    //Test
     const chessboardSetup: ChessPositionArrayNotation = [
       ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
       ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
@@ -92,6 +80,18 @@ export class Game extends Scene {
       ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
       ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
     ];
+
+    //Test
+    // const chessboardSetup: ChessPositionArrayNotation = [
+    //   ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+    //   ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+    //   [null, null, null, null, null, null, null, null],
+    //   [null, null, null, null, null, null, null, null],
+    //   [null, null, null, null, null, null, null, null],
+    //   [null, null, null, null, null, null, null, null],
+    //   ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+    //   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
+    // ];
 
     // Test2
     // const chessboardSetup: ChessPositionArrayNotation = [
@@ -263,7 +263,12 @@ export class Game extends Scene {
       return true;
     }
     if (isValidCombine(data, from, to)) {
-      this.chess.combine(from, to, findPieceEnum(data.position.typeAt(from) + data.position.typeAt(to)));
+      var combined = data.position.typeAt(from) + data.position.typeAt(to);
+      if(activeColor == 1){
+        combined = combined.toLowerCase()
+      }
+      console.log(`combined`, combined);
+      this.chess.combine(from, to, findPiece(combined));
       return true;
     }
     if (isValidCapture(data, from, to)) {

@@ -62,7 +62,7 @@ export class ChessSpritePosition {
 
   // Method to capture a piece
   combine(from: Pos, to: Pos, combineTo: PieceNotation) {
-    console.log(`Sprite combine`)
+    console.log(`Sprite combine:`, combineTo)
     this.spark(to); // Explode the captured piece
     this.move(from, to);
     this.spark(to); // Explode the captured piece

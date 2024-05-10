@@ -8,11 +8,17 @@ export type FENData = { position: ChessPosition, activeColor: ChessColor, canCas
 export type Pos = [number, number];
 export type ChessColor = 0 | 1;
 export type PieceNotation = 'K' | 'KQ' | 'KB' | 'KN' | 'KR' | 'KP' | 'Q' | 'QQ' | 'QB' | 'QN' | 'QR' | 'QP' | 'B' | 'BB' | 'BN' | 'BR' | 'BP' | 'N' | 'NN' | 'NR' | 'NP' | 'R' | 'RR' | 'RP' | 'P' | 'PP' | 'k' | 'kq' | 'kb' | 'kn' | 'kr' | 'kp' | 'q' | 'qq' | 'qb' | 'qn' | 'qr' | 'qp' | 'b' | 'bb' | 'bn' | 'br' | 'bp' | 'n' | 'nn' | 'nr' | 'np' | 'r' | 'rr' | 'rp' | 'p' | 'pp';
+const pieceNotations: PieceNotation[] = ['K', 'KQ', 'KB', 'KN', 'KR', 'KP', 'Q', 'QQ', 'QB', 'QN', 'QR', 'QP', 'B', 'BB', 'BN', 'BR', 'BP', 'N', 'NN', 'NR', 'NP', 'R', 'RR', 'RP', 'P', 'PP', 'k', 'kq', 'kb', 'kn', 'kr', 'kp', 'q', 'qq', 'qb', 'qn', 'qr', 'qp', 'b', 'bb', 'bn', 'br', 'bp', 'n', 'nn', 'nr', 'np', 'r', 'rr', 'rp', 'p', 'pp'];
 export type PromotablePieceNotation = 'Q' | 'q' | 'B' | 'b' | 'N' | 'n' | 'R' | 'r';
 export type Tuple8<T> = [T, T, T, T, T, T, T, T];
 export type Tuple2<T> = [T, T];
 export type ChessPositionRowNotation = Tuple8<PieceNotation | null>;
 export type ChessPositionArrayNotation = Tuple8<ChessPositionRowNotation>;
+
+export function findPiece(piece: string): PieceNotation {
+  const normalizedPiece = piece.toLowerCase();
+  return pieceNotations.find(notation => notation === piece || notation.split('').reverse().join('') === normalizedPiece)!;
+}
 
 // checks if the value of two positions are equal
 export function equals(p1: Pos, p2: Pos) {
@@ -112,7 +118,7 @@ export class JBLChessplus {
     const [r1, c] = from;
     const r2 = to[0];
     this.#data.enPassants.push([(r1 + r2) / 2, c]);
-    console.table(this.#data.enPassants);
+    // console.table(this.#data.enPassants);
   }
 
   castleKingside(color: ChessColor) {
