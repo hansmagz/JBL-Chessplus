@@ -13,18 +13,57 @@ import { findPieceEnum } from "../../enums";
 // A dictionary mapping piece notations to their respective validators
 const pieceValidators: Record<PieceNotation, ChessPieceValidator> = {
   'K': new KingValidator(0),  // King for white pieces
+  'KQ': new KingValidator(0),
+  'KB': new KingValidator(0),
+  'KN': new KingValidator(0),
+  'KR': new KingValidator(0),
+  'KP': new KingValidator(0),
   'Q': new QueenValidator(0), // Queen for white pieces
+  'QQ': new QueenValidator(0),
+  'QB': new QueenValidator(0),
+  'QN': new QueenValidator(0),
+  'QR': new QueenValidator(0),
+  'QP': new QueenValidator(0),
   'B': new BishopValidator(0), // Bishop for white pieces
+  'BB': new BishopValidator(0),
+  'BN': new BishopValidator(0),
+  'BR': new BishopValidator(0),
+  'BP': new BishopPawnValidator(0),
   'N': new KnightValidator(0), // Knight for white pieces
+  'NN': new KnightValidator(0),
+  'NR': new KnightValidator(0),
+  'NP': new KnightValidator(0),
   'R': new RookValidator(0), // Rook for white pieces
+  'RR': new RookValidator(0),
+  'RP': new RookValidator(0),
   'P': new PawnValidator(0), // Pawn for white pieces
-  'BP': new BishopPawnValidator(0), // Pawn for white pieces
-  'k': new KingValidator(1), // King for black pieces
-  'q': new QueenValidator(1), // Queen for black pieces
-  'b': new BishopValidator(1), // Bishop for black pieces
-  'n': new KnightValidator(1), // Knight for black pieces
-  'r': new RookValidator(1), // Rook for black pieces
-  'p': new PawnValidator(1), // Pawn for black pieces
+  'PP': new PawnValidator(0),
+  'k': new KingValidator(0),  // King for black pieces
+  'kq': new KingValidator(0),
+  'kb': new KingValidator(0),
+  'kn': new KingValidator(0),
+  'kr': new KingValidator(0),
+  'kp': new KingValidator(0),
+  'q': new QueenValidator(0), // Queen for black pieces
+  'qq': new QueenValidator(0),
+  'qb': new QueenValidator(0),
+  'qn': new QueenValidator(0),
+  'qr': new QueenValidator(0),
+  'qp': new QueenValidator(0),
+  'b': new BishopValidator(0), // Bishop for black pieces
+  'bb': new BishopValidator(0),
+  'bn': new BishopValidator(0),
+  'br': new BishopValidator(0),
+  'bp': new BishopPawnValidator(0),
+  'n': new KnightValidator(0), // Knight for black pieces
+  'nn': new KnightValidator(0),
+  'nr': new KnightValidator(0),
+  'np': new KnightValidator(0),
+  'r': new RookValidator(0), // Rook for black pieces
+  'rr': new RookValidator(0),
+  'rp': new RookValidator(0),
+  'p': new PawnValidator(0), // Pawn for black pieces
+  'pp': new PawnValidator(0),
 };
 
 // Checks if a piece at the given position exists and matches the current player color
